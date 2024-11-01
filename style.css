@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.state {
+    stroke: #fff;
+    stroke-width: 1px;
+}
