@@ -1,11 +1,41 @@
+
 body {
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+/* Dropdown styling */
+.dropdown-container {
+    gap: 30px; 
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+label {
+    font-size: 14px;
+    margin-right: 8px;
+}
+/* Increase the width of dropdowns */
+select {
+    padding: 5px;
+    font-size: 14px;
+    width: 200px;  
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
+select option {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 h1 {
     text-align: center;
 }
-
 .tooltip {
     position: absolute;
     padding: 8px;
@@ -15,7 +45,6 @@ h1 {
     pointer-events: none;
     font-size: 12px;
 }
-
 .state {
     stroke: #fff;
     stroke-width: 1px;
