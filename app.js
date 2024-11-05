@@ -15,16 +15,31 @@ const tooltip = d3.select("#tooltip");
 d3.csv("Drugs.csv").then(data => {
     // Filter and clean data
     const cleanedData = data
-        .filter(d => d["Data Value"] && !isNaN(+d["Data Value"]))  // Filter out rows with missing or invalid Data Value
+        .filter(d => {
+            const hasValidValue = d["Data Value"] && !isNaN(+d["Data Value"]) || d["Predicted Value"] && !isNaN(+d["Predicted Value"]);
+            if (!hasValidValue) console.log("Filtered out:", d); // Log any data row that was filtered out
+            return hasValidValue;
+        })
         .map(d => ({
             state: d["State Name"],
             drug: d["Indicator"].split(" ")[0],  // Extract primary drug type
-            deaths: +d["Data Value"]
+            deaths: +d["Data Value"] || +d["Predicted Value"],  // Use Data Value, fallback to Predicted Value
+            year: +d["Year"]  // Parse year as integer
         }));
 
-    // Create a dropdown for selecting drug types
+    console.log("Cleaned Data:", cleanedData);  // Log the cleaned data to inspect
+
+    // Get unique drug types and years
     const drugTypes = Array.from(new Set(cleanedData.map(d => d.drug)));
-    const dropdown = d3.select("body")
+    const years = Array.from(new Set(cleanedData.map(d => d.year))).sort();
+
+    console.log("Drug Types:", drugTypes);  // Should list all unique drug types
+    console.log("Years:", years);  // Should list all unique years
+
+    // Create dropdown for selecting drug types
+    d3.select("body")
+        .append("label")
+        .text("Select Drug Type: ")
         .append("select")
         .attr("id", "drug-select")
         .selectAll("option")
@@ -34,9 +49,22 @@ d3.csv("Drugs.csv").then(data => {
         .text(d => d)
         .attr("value", d => d);
 
-    // Function to update the bar chart based on selected drug type
-    function updateChart(selectedDrug) {
-        const drugData = cleanedData.filter(d => d.drug === selectedDrug);
+    // Create dropdown for selecting years
+    d3.select("body")
+        .append("label")
+        .text("Select Year: ")
+        .append("select")
+        .attr("id", "year-select")
+        .selectAll("option")
+        .data(years)
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
+
+    // Function to update the bar chart based on selected drug type and year
+    function updateChart(selectedDrug, selectedYear) {
+        const drugData = cleanedData.filter(d => d.drug === selectedDrug && d.year === selectedYear);
 
         // Scale setup
         const x = d3.scaleBand()
@@ -49,7 +77,7 @@ d3.csv("Drugs.csv").then(data => {
             .nice()
             .range([height, 0]);
 
-        // Clear previous bars
+        // Clear previous bars and axes
         svg.selectAll(".bar").remove();
         svg.selectAll(".x-axis").remove();
         svg.selectAll(".y-axis").remove();
@@ -92,13 +120,20 @@ d3.csv("Drugs.csv").then(data => {
             .on("mouseout", () => tooltip.style("opacity", 0));
     }
 
-    // Initialize chart with the first drug type in the list
-    updateChart(drugTypes[0]);
+    // Initialize chart with the first drug type and year in the list
+    updateChart(drugTypes[0], years[0]);
 
-    // Update chart on drug type selection change
+    // Update chart on drug type or year selection change
     d3.select("#drug-select").on("change", function() {
-        const selectedDrug = d3.select(this).property("value");
-        updateChart(selectedDrug);
+        const selectedDrug = d3.select("#drug-select").property("value");
+        const selectedYear = +d3.select("#year-select").property("value");
+        updateChart(selectedDrug, selectedYear);
+    });
+
+    d3.select("#year-select").on("change", function() {
+        const selectedDrug = d3.select("#drug-select").property("value");
+        const selectedYear = +d3.select("#year-select").property("value");
+        updateChart(selectedDrug, selectedYear);
     });
 
 }).catch(error => console.error("Error loading CSV file:", error));
