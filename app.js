@@ -11,7 +11,7 @@ const svg = d3.select("#map")
 
 const tooltip = d3.select("#tooltip");
 
-// Load CSV data
+// Load data 
 d3.csv("Drugs.csv").then(data => {
     // Filter and clean data
     const cleanedData = data
