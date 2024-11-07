@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US Drug Overdose Deaths Map</title>
-    <!-- Link to D3.js library -->
+    <title>US Drug Overdose Deaths by State - Stacked Bar Chart</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://d3js.org/topojson.v1.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>US Drug Overdose Deaths by State</h1>
-    <div id="tooltip" class="tooltip" style="opacity: 0;"></div>
-    <svg width="960" height="600" id="map"></svg>
-    <!-- Link to the JavaScript file -->
+    <div>
+        <label for="year-select">Select Year:</label>
+        <select id="year-select"></select>
+    </div>
+    <div id="tooltip" class="tooltip" style="opacity: 0; position: absolute; pointer-events: none; background-color: white; border: 1px solid #333; padding: 5px; border-radius: 3px;"></div>
+    <div id="chart-container">
+        <svg width="960" height="600" id="chart"></svg>
+    </div>
     <script src="app.js"></script>
 </body>
 </html>
-
